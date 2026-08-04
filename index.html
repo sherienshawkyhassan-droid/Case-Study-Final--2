@@ -4,6 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>THE FALCON FILES — Interactive Project Governance Audit</title>
+    <!-- Include EmailJS SDK -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script type="text/javascript">
+        (function() {
+            emailjs.init({
+                publicKey: "YOUR_PUBLIC_KEY", // Replace with your EmailJS Public Key
+            });
+        })();
+    </script>
     <style>
         :root {
             --bg-color: #0f172a;
@@ -106,6 +115,27 @@
             padding-bottom: 8px;
             margin-bottom: 15px;
             font-size: 1.4rem;
+        }
+
+        .form-group {
+            margin-top: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #38bdf8;
+            font-weight: 600;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            background: #0f172a;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: white;
+            font-size: 1rem;
         }
 
         .character-box {
@@ -278,6 +308,13 @@
             color: #38bdf8;
             margin: 15px 0;
         }
+
+        .email-status {
+            margin-top: 15px;
+            font-style: italic;
+            font-size: 0.9rem;
+            color: var(--warning-color);
+        }
     </style>
 </head>
 <body>
@@ -299,9 +336,24 @@
         <div class="progress-fill" id="progressFill"></div>
     </div>
 
-    <!-- Chapter 0 -->
+    <!-- Card 0: Registration Screen -->
     <div class="card active" id="chapter-0">
-        <h3>BEFORE YOU BEGIN — Cast of Characters</h3>
+        <h3>AUDITOR REGISTRATION</h3>
+        <p>Before beginning the investigation, please enter your details to log your final evaluation credentials.</p>
+        
+        <div class="form-group">
+            <label for="auditorName">Your Full Name:</label>
+            <input type="text" id="auditorName" class="form-control" placeholder="e.g. Rania Kamal" required>
+        </div>
+
+        <div class="nav-buttons" style="justify-content: flex-end; margin-top: 25px;">
+            <button class="btn" onclick="startInvestigation()">Proceed to Briefing →</button>
+        </div>
+    </div>
+
+    <!-- Chapter 0.5: Cast of Characters -->
+    <div class="card" id="chapter-0-5">
+        <h3>CAST OF CHARACTERS</h3>
         <p>You are joining the audit team. Read each scene, examine the Evidence, and answer the audit questions at the end of each chapter.</p>
         <br>
         <div class="character-box">
@@ -325,8 +377,9 @@
             <div>Inherited the finished system, not the project that built it.</div>
         </div>
 
-        <div class="nav-buttons" style="justify-content: flex-end;">
-            <button class="btn" onclick="nextChapter(1)">Start Investigation →</button>
+        <div class="nav-buttons">
+            <button class="btn" onclick="goToCard('chapter-0')">← Previous</button>
+            <button class="btn" onclick="goToCard('chapter-1')">Start Investigation →</button>
         </div>
     </div>
 
@@ -364,8 +417,8 @@
         </div>
 
         <div class="nav-buttons">
-            <button class="btn" onclick="nextChapter(0)">← Previous</button>
-            <button class="btn" onclick="nextChapter(2)">Next Chapter →</button>
+            <button class="btn" onclick="goToCard('chapter-0-5')">← Previous</button>
+            <button class="btn" onclick="goToCard('chapter-2')">Next Chapter →</button>
         </div>
     </div>
 
@@ -422,8 +475,8 @@
         </div>
 
         <div class="nav-buttons">
-            <button class="btn" onclick="nextChapter(1)">← Previous</button>
-            <button class="btn" onclick="nextChapter(3)">Next Chapter →</button>
+            <button class="btn" onclick="goToCard('chapter-1')">← Previous</button>
+            <button class="btn" onclick="goToCard('chapter-3')">Next Chapter →</button>
         </div>
     </div>
 
@@ -460,8 +513,8 @@
         </div>
 
         <div class="nav-buttons">
-            <button class="btn" onclick="nextChapter(2)">← Previous</button>
-            <button class="btn" onclick="nextChapter(4)">Next Chapter →</button>
+            <button class="btn" onclick="goToCard('chapter-2')">← Previous</button>
+            <button class="btn" onclick="goToCard('chapter-4')">Next Chapter →</button>
         </div>
     </div>
 
@@ -521,8 +574,8 @@
         </div>
 
         <div class="nav-buttons">
-            <button class="btn" onclick="nextChapter(3)">← Previous</button>
-            <button class="btn" onclick="nextChapter(5)">Next Chapter →</button>
+            <button class="btn" onclick="goToCard('chapter-3')">← Previous</button>
+            <button class="btn" onclick="goToCard('chapter-5')">Next Chapter →</button>
         </div>
     </div>
 
@@ -586,8 +639,8 @@
         </div>
 
         <div class="nav-buttons">
-            <button class="btn" onclick="nextChapter(4)">← Previous</button>
-            <button class="btn" onclick="nextChapter(6)">Next Chapter →</button>
+            <button class="btn" onclick="goToCard('chapter-4')">← Previous</button>
+            <button class="btn" onclick="goToCard('chapter-6')">Next Chapter →</button>
         </div>
     </div>
 
@@ -636,8 +689,8 @@
         </div>
 
         <div class="nav-buttons">
-            <button class="btn" onclick="nextChapter(5)">← Previous</button>
-            <button class="btn" onclick="nextChapter(7)">Next Chapter →</button>
+            <button class="btn" onclick="goToCard('chapter-5')">← Previous</button>
+            <button class="btn" onclick="goToCard('chapter-7')">Next Chapter →</button>
         </div>
     </div>
 
@@ -667,8 +720,8 @@
         </div>
 
         <div class="nav-buttons">
-            <button class="btn" onclick="nextChapter(6)">← Previous</button>
-            <button class="btn" onclick="nextChapter(8)">Submit Final Audit →</button>
+            <button class="btn" onclick="goToCard('chapter-6')">← Previous</button>
+            <button class="btn" onclick="submitAudit()">Submit Final Audit →</button>
         </div>
     </div>
 
@@ -676,9 +729,11 @@
     <div class="card" id="chapter-8">
         <h3>AUDIT REPORT SUMMARY</h3>
         <div class="summary-box">
+            <p>Auditor: <span id="displayAuditorName" style="color: #38bdf8; font-weight: bold;"></span></p>
             <p>Your Audit Findings Score:</p>
             <div class="score-display" id="scoreDisplay">0 / 7</div>
             <p id="summaryText">You have completed the audit investigation for Project Falcon.</p>
+            <div class="email-status" id="emailStatus">Sending results report to sherienshawkyhassan@gmail.com...</div>
         </div>
         <br>
         <h4>Key ISO 21502 Non-Conformances Identified:</h4>
@@ -697,7 +752,7 @@
 </div>
 
 <script>
-    let currentChapter = 0;
+    let auditorName = "";
     let userAnswers = {};
     const correctAnswers = {
         'q1': 'C',
@@ -709,20 +764,27 @@
         'q7': 'C'
     };
 
-    function updateProgress() {
-        const total = 8;
-        const progress = (currentChapter / total) * 100;
+    function updateProgress(cardId) {
+        const order = ['chapter-0', 'chapter-0-5', 'chapter-1', 'chapter-2', 'chapter-3', 'chapter-4', 'chapter-5', 'chapter-6', 'chapter-7', 'chapter-8'];
+        const index = order.indexOf(cardId);
+        const progress = (index / (order.length - 1)) * 100;
         document.getElementById('progressFill').style.width = progress + '%';
     }
 
-    function nextChapter(chapterIndex) {
+    function goToCard(cardId) {
         document.querySelectorAll('.card').forEach(card => card.classList.remove('active'));
-        document.getElementById('chapter-' + chapterIndex).classList.add('active');
-        currentChapter = chapterIndex;
-        updateProgress();
-        if (chapterIndex === 8) {
-            calculateScore();
+        document.getElementById(cardId).classList.add('active');
+        updateProgress(cardId);
+    }
+
+    function startInvestigation() {
+        const nameInput = document.getElementById('auditorName').value.trim();
+        if (!nameInput) {
+            alert('Please enter your name to proceed.');
+            return;
         }
+        auditorName = nameInput;
+        goToCard('chapter-0-5');
     }
 
     function checkAnswer(questionId, selected, isCorrect) {
@@ -754,7 +816,10 @@
         }
     }
 
-    function calculateScore() {
+    function submitAudit() {
+        goToCard('chapter-8');
+        document.getElementById('displayAuditorName').innerText = auditorName;
+
         let score = 0;
         for (let q in correctAnswers) {
             if (userAnswers[q] === correctAnswers[q]) {
@@ -772,10 +837,32 @@
             message = "Audit incomplete. Re-examine the evidence and ISO 21502 clauses.";
         }
         document.getElementById('summaryText').innerText = message;
+
+        // Automatically trigger EmailJS submission to sherienshawkyhassan@gmail.com
+        const statusEl = document.getElementById('emailStatus');
+        
+        const templateParams = {
+            auditor_name: auditorName,
+            score: score + ' / 7',
+            recipient_email: 'sherienshawkyhassan@gmail.com',
+            audit_summary: message
+        };
+
+        // NOTE: Replace 'YOUR_SERVICE_ID' and 'YOUR_TEMPLATE_ID' with your real EmailJS keys
+        emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', templateParams)
+            .then(function(response) {
+                statusEl.style.color = 'var(--success-color)';
+                statusEl.innerText = '✔ Results successfully logged and emailed to sherienshawkyhassan@gmail.com';
+            }, function(error) {
+                statusEl.style.color = 'var(--error-color)';
+                statusEl.innerText = '⚠ Automated delivery failed. Please verify your EmailJS configuration settings.';
+            });
     }
 
     function restartAudit() {
         userAnswers = {};
+        auditorName = "";
+        document.getElementById('auditorName').value = "";
         document.querySelectorAll('.option-btn').forEach(btn => {
             btn.disabled = false;
             btn.classList.remove('correct', 'incorrect');
@@ -783,7 +870,7 @@
         document.querySelectorAll('.feedback').forEach(f => {
             f.style.display = 'none';
         });
-        nextChapter(0);
+        goToCard('chapter-0');
     }
 </script>
 
