@@ -44,10 +44,10 @@ function updateProgress(cardId) {
 }
 
 function goToCard(cardId) {
-
     const requestedIndex = chapterOrder.indexOf(cardId);
 
-    if (requestedIndex < highestUnlockedIndex) {
+    // Fixed: Prevent skipping ahead past unlocked chapters, but allow going back or forward sequentially
+    if (requestedIndex > highestUnlockedIndex + 1) {
         return;
     }
 
@@ -70,7 +70,6 @@ function goToCard(cardId) {
 }
 
 function startInvestigation() {
-
     const nameInput = document.getElementById('auditorName').value.trim();
 
     if (!nameInput) {
@@ -84,28 +83,20 @@ function startInvestigation() {
 }
 
 function checkAnswer(questionId, selected, isCorrect) {
-
     if (userAnswers[questionId]) {
         return;
     }
 
     userAnswers[questionId] = selected;
 
-    const container =
-        document.getElementById(questionId + '-options');
-
-    const buttons =
-        container.querySelectorAll('.option-btn');
-
-    const feedback =
-        document.getElementById(questionId + '-feedback');
+    const container = document.getElementById(questionId + '-options');
+    const buttons = container.querySelectorAll('.option-btn');
+    const feedback = document.getElementById(questionId + '-feedback');
 
     buttons.forEach(btn => {
-
         btn.disabled = true;
 
         if (btn.innerText.startsWith(selected)) {
-
             if (isCorrect) {
                 btn.classList.add('correct');
             } else {
@@ -122,22 +113,14 @@ function checkAnswer(questionId, selected, isCorrect) {
     });
 
     if (isCorrect) {
-
         feedback.className = 'feedback correct';
-
-        feedback.innerText =
-            'Correct. Proceeding to next chapter...';
-
+        feedback.innerText = 'Correct. Proceeding to next chapter...';
     } else {
-
         feedback.className = 'feedback incorrect';
-
-        feedback.innerText =
-            'Answer recorded. Proceeding to next chapter...';
+        feedback.innerText = 'Answer recorded. Proceeding to next chapter...';
     }
 
     if (questionChapterMap[questionId]) {
-
         setTimeout(() => {
             goToCard(questionChapterMap[questionId]);
         }, 1500);
@@ -145,17 +128,13 @@ function checkAnswer(questionId, selected, isCorrect) {
 }
 
 function submitAudit() {
-
     goToCard('chapter-8');
 
-    document.getElementById(
-        'displayAuditorName'
-    ).innerText = auditorName;
+    document.getElementById('displayAuditorName').innerText = auditorName;
 
     let score = 0;
 
     Object.keys(correctAnswers).forEach(question => {
-
         if (
             userAnswers[question] ===
             correctAnswers[question]
@@ -164,7 +143,8 @@ function submitAudit() {
         }
     });
 
-    document.getElementById(
-        'scoreDisplay'
-    ).innerText =
-   
+    // Fixed: Completed the assignment statement to display score properly
+    document.getElementById('scoreDisplay').innerText = score + ' / ' + Object.keys(correctAnswers).length;
+}
+
+</script>
